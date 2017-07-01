@@ -1,0 +1,19 @@
+###############################################################
+#####
+##### Makefile.local.linuxARM for boop
+##### Created in the early morninghours
+#####
+##### Copy this to Makefile.local and modify for your Linux
+##### installation
+#####
+###############################################################
+
+ARMBASE = /opt/arm-elf
+INCLUDEPATH = $(ARMBASE)/include
+LIBPATH = $(ARMBASE)/lib/gcc/arm-elf/4.1.1/interwork
+ARMPATH = $(ARMBASE)/bin
+TOOLPREFIX = arm-elf-
+LPCTOOL = lpctool -d /dev/ttyUSB0
+OPENOCD = openocd -f betty.cfg -f interface/parport.cfg
+
+######################## EOF ##################################

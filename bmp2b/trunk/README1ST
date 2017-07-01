@@ -1,0 +1,34 @@
+
+folgendes: 
+
+um ein Bild betty-tauglich umzuwandeln:
+
+1. das bild MUSS (!!!1einself) im 24bit-rgb-farbraum sein
+2. das bild MUSS 128 px breit und 160 px hoch sein
+3. "make bmp2b" eingeben
+4. "./bmp2b -c -i bild.bmp -o out" eingeben, wobei bild.bmp die eingangsdatei ist und out die ausgangsdatei
+5. es werden zwei dateien erzeugt: erstens "out", also die ausgabedatei; zweitens blook_bild.bmp
+	in dieser zweiten datei wird das bild mit 4 graustufen dargestellt, so wie es voraussichtlich auf der
+	betty aussieht
+6. das bild kann verwendet werden. zur benutzung als logo zB einfach nach display/boop_logo kopieren.
+
+...fertig
+
+viel erfolg.
+
+damaltor
+
+
+
+
+das grundprogramm kommt von hackbard@hackdaworld.org, ich habe das makefile etwas angepasst und die ersten zeilen 
+	der ausgabe angepasst.
+
+
+zur erzeugung eines 24bpp bildes aus einem 8bpp:
+	gimp öffnen
+	neue datei
+	128x160 und rgb auswählen
+	das bild hineinkopieren
+	speichern als bmp, erweiterte optionen -> 24 bpp auswählen (!!)
+	fertig

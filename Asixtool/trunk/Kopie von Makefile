@@ -1,0 +1,37 @@
+###############################################################
+#####
+##### Makefile for asixtool
+#####
+###############################################################
+
+###############################################################
+#####
+##### PATHS (default installation)
+#####
+###############################################################
+
+INSTALLDIR_BIN=/usr/local/bin
+
+-include Makefile.local
+
+BASE = D:\Programmieren\Cygwin
+INCLUDEPATH = $(BASE)\usr\include
+##LIBPATH = $(BASE)\lib\gcc\i686-pc-cygwin\3.4.4\include
+
+###############################################################
+#####
+##### Do the whole shabang
+#####
+###############################################################
+
+all: asixtool
+
+asixtool: asix_serial.c asix_serial.h bootcom.c bootcom.h infohelper.h infohelper.c main.c 
+	$(BASE)/bin/gcc.exe -Os -Wall asix_serial.c bootcom.c infohelper.c main.c -o asixtool
+	strip asixtool
+
+
+clean:
+	$(RM) *.o *~ asixtool
+
+### EOF

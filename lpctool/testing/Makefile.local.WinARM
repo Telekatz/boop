@@ -1,0 +1,25 @@
+###############################################################
+#####
+##### Makefile.local.WinARM for boop
+##### Created in the early morninghours
+#####
+##### Makefile.local.WinARM V1.0 by alterego - alteregon@gmx.net
+#####
+###############################################################
+
+###############################################################
+#####
+##### PATHS (default installation)
+#####
+##### You can put your path-config into Makefile.local 
+##### to override these defaults
+#####
+###############################################################
+
+ARMBASE=c:/WinARM/
+INCLUDEPATH=$(ARMBASE)/include
+LIBPATH=$(ARMBASE)/arm-elf/lib/interwork
+ARMPATH=$(ARMBASE)/bin
+TOOLPREFIX=/arm-elf-
+
+######################## EOF ##################################

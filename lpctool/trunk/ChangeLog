@@ -1,0 +1,8 @@
+2007-10-05  Simon Budig  <simon@budig.de>
+
+	toolcom.c: added info line for flash erase.
+	
+2007-10-05  Ch. Klippel  <ck@mamalala.net>
+
+	*/* initial import into SVN
+

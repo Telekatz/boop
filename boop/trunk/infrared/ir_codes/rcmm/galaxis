@@ -1,0 +1,62 @@
+/*
+    rcmm_galaxis.code - infrared codes for the galaxis receiver in RCMM coding 
+    Copyright (C) 2007  Ch. Klippel <ck@mamalala.net>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+{
+	0x0D500800, // A		->
+	0x0D500861, // B		->	Alt
+	0x0D500879, // C		->	List
+	0x0D50080A, // D		->	Back
+	0x0D500845, // Betty		->	Setup
+	0x0D500855, // Exit		->	Exit
+	0x0D500858, // Up		->	Up
+	0x0D500859, // Down		->	Down
+	0x0D50085A, // Left		->	Left
+	0x0D50085B, // Right		->	Right
+	0x0D50085C, // OK		->	OK
+	0x0D500810, // Vol+		->	Vol+
+	0x0D500811, // Vol-		->	Vol-
+	0x0D50080D, // Mute		->	Mute
+	0x0D500820, // Prog+		->	Prog+
+	0x0D500821, // Prog-		->	Prog-
+	0x0D500801, // 1		->	1
+	0x0D500802, // 2		->	2
+	0x0D500803, // 3		->	3
+	0x0D500804, // 4		->	4
+	0x0D500805, // 5		->	5
+	0x0D500806, // 6		->	6
+	0x0D500807, // 7		->	7
+	0x0D500808, // 8		->	8
+	0x0D500809, // 9		->	9
+	0x0D500800, // 0		->	0
+	0x0D500850, // -/--		->	Audio
+	0x0D5008FF, // AV		->	VCR
+	0x0D500878, // Menu		->	Menu
+	0x0D500879, // PiP		->	List
+	0x0D50084E, // A/B		->	Language
+	0x0D500861, // 16:9		->	Alt
+	0x0D50080F, // Info		->	Info
+	0x0D50083C, // VTX1		->	Text
+	0x0D50084B, // VTX2		->	Subtitle
+	0x0D5008CC, // VTX3		->	EPG
+	0x0D500870, // Blue		->	Blue
+	0x0D50086F, // Yello		->	Yellow
+	0x0D50086E, // Green		->	Green
+	0x0D50086D, // Red		->	Red
+	0x0D50083F, // TV		->	TV
+	0x0D50080C  // Power		->	Power
+},

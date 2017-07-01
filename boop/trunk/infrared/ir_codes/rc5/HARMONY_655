@@ -1,0 +1,62 @@
+/*
+    infrared codes for technisat satreceiver
+    Copyright (C) 2008  p.c.squirrel <pcs@gmx.at>
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+{
+	RC5_STD(0x0000), // A		->
+	RC5_STD(0x0000), // B		->
+	RC5_STD(0x0000), // C		->
+	RC5_STD(0x0000), // D		->
+	RC5_STD(0x0000), // Betty	->
+	RC5_STD(0x100B), // Exit	->	Zurück
+	RC5_STD(0x1012), // Up		->
+	RC5_STD(0x1013), // Down	->
+	RC5_STD(0x1015), // Left	->
+	RC5_STD(0x1014), // Right	->
+	RC5_STD(0x1023), // OK		->
+	RC5_STD(0x0210), // Vol+	->	Vol+
+	RC5_STD(0x0211), // Vol-	->	Vol-
+	RC5_STD(0x020D), // Mute	->	Mute
+	RC5_STD(0x1020), // Prog+	->	Prog+
+	RC5_STD(0x1021), // Prog-	->	Prog-
+	RC5_STD(0x0201), // 1		->	1
+	RC5_STD(0x0202), // 2		->	2
+	RC5_STD(0x0203), // 3		->	3
+	RC5_STD(0x0204), // 4		->	4
+	RC5_STD(0x0205), // 5		->	5
+	RC5_STD(0x0206), // 6		->	6
+	RC5_STD(0x0207), // 7		->	7
+	RC5_STD(0x0208), // 8		->	8
+	RC5_STD(0x0209), // 9		->	9
+	RC5_STD(0x1000), // 0		->	0
+	RC5_STD(0x17C0), // -/--	->	AUDIO
+	RC5_STD(0x0238), // AV		->	EXT
+	RC5_STD(0x100E), // Menu	->
+	RC5_STD(0x17FB), // PiP		->	Full
+	RC5_STD(0x17FC), // A/B		->	GO
+	RC5_STD(0x1165), // 16:9	->	FR
+	RC5_STD(0x1166), // Info	->	FF
+	RC5_STD(0x1175), // VTX1	->	Play
+	RC5_STD(0x17F6), // VTX2	->	Stop
+	RC5_STD(0x17F7), // VTX3	->	Record
+	RC5_STD(0x1034), // Blue	->
+	RC5_STD(0x1032), // Yello	->
+	RC5_STD(0x1036), // Green	->
+	RC5_STD(0x1037), // Red		->
+	RC5_STD(0x1169), // TV		->	Pause
+	RC5_STD(0x020C)  // Power	->	Standby
+},
+
