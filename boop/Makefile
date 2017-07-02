@@ -18,14 +18,15 @@
 #####
 ###############################################################
 
-ARMBASE = /opt/toolchains/gcc-arm-none-eabi-4_9-2014q4
-INCLUDEPATH = $(ARMBASE)/include
-#LIBGCCPATH = $(ARMBASE)/lib/gcc/arm-none-eabi/4.7.3/thumb/arm7tdmi-s
-#LIBCPATH = $(ARMBASE)/arm-none-eabi/lib/thumb/arm7tdmi-s
-ARMPATH = $(ARMBASE)/bin
+
+#ARMBASE = F:/Tools/GNU_Tools_ARM_Embedded/5.4
+#INCLUDEPATH = $(ARMBASE)/arm-none-eabi/include
+#LIBPATH = $(ARMBASE)/arm-none-eabi/lib
+#ARMPATH = $(ARMBASE)/bin/
 TOOLPREFIX = arm-none-eabi-
 LPCTOOL = lpctool
-OPENOCD = openocd -f betty.cfg -f interface/parport.cfg
+OPENOCDPATH = F:\Tools\OpenOCD
+OPENOCD = $(OPENOCDPATH)\openocd.exe -f betty.cfg -f $(OPENOCDPATH)\interface\uniprog.cfg 
 
 ###############################################################
 #####
@@ -33,18 +34,18 @@ OPENOCD = openocd -f betty.cfg -f interface/parport.cfg
 #####
 ###############################################################
 
-CC = $(ARMPATH)/$(TOOLPREFIX)gcc
-AS = $(ARMPATH)/$(TOOLPREFIX)as
-#LD = $(ARMPATH)/$(TOOLPREFIX)ld
-LD = $(ARMPATH)/$(TOOLPREFIX)gcc
-OC = $(ARMPATH)/$(TOOLPREFIX)objcopy
-OD = $(ARMPATH)/$(TOOLPREFIX)objdump
+CC = $(ARMPATH)$(TOOLPREFIX)gcc
+AS = $(ARMPATH)$(TOOLPREFIX)gcc
+LD = $(ARMPATH)$(TOOLPREFIX)gcc
+OC = $(ARMPATH)$(TOOLPREFIX)objcopy
+OD = $(ARMPATH)$(TOOLPREFIX)objdump
+SIZE = $(ARMPATH)$(TOOLPREFIX)size
 
 CPUFLAGS = -mcpu=arm7tdmi-s
 OPTFLAGS = -Os
-CFLAGS = -Wall -mthumb-interwork -msoft-float
-INC = -I$(INCLUDEPATH) -I. -Iinterrupt -Idisplay -Ikeyboard -Iaudio -Iinfrared -Iserial -Iflash -Icc1100 -Igui -Itimer -Igames -Iadc -Irtc  -Itools
-ASFLAGS = -D --gstabs -mthumb-interwork -mfpu=softfpa
+CFLAGS = -Wall -mthumb-interwork 
+INC = -I. -Iinterrupt -Idisplay -Ikeyboard -Iaudio -Iinfrared -Iserial -Iflash -Icc1100 -Igui -Itimer -Igames -Iadc -Irtc  -Itools
+ASFLAGS = -g -I. -mthumb-interwork 
 #LDFLAGS = -Tlpc2220_rom.ld -Map boop.map
 #LIBS = -lc -lgcc
 LDFLAGS = -mthumb-interwork -nostartfiles -Xlinker -Map -Xlinker boop.map -Tlpc2220_rom.ld
@@ -91,9 +92,9 @@ $(eval $(call expand_dir,))
 
 OBJS := $(patsubst %.s,%.o,$(ALLSRCS:.c=.o)) $(ALLTHUMBSRCS:.c=.thumb.o) $(ALLTHUMBSRCSUNOPT:.c=.thumbunopt.o)
 
-all:	version $(DEPS) boop_rom.bin boop_rom.hex
+all:	$(DEPS) boop_rom.bin boop_rom.hex
 
-debug:	version.h $(DEPS) boop_rom.bin boop_rom.hex
+debug:	$(DEPS) boop_rom.bin boop_rom.hex
 
 release: clean version $(DEPS) boop_rom.bin boop_rom.hex
 	@echo -n '\n\nRelease erstellt SVN Version ++'
@@ -120,9 +121,10 @@ test: boop_rom.elf
 
 boop_rom.elf: $(OBJS)
 	$(LD) $(LDFLAGS) -L$(LIBGCCPATH) -L$(LIBCPATH) -o $@ $^ $(LIBS)
+	arm-none-eabi-size $@
 
 %.o: %.s
-	$(AS) $(CPUFLAGS) $(ASFLAGS) -o $@ $<
+	$(CC) $(ASFLAGS) -c -o $@ $<
 
 %.o: %.c
 	$(COMPILE) $(OPTFLAGS) -c -MMD -MF $(dir $<).deps/$(notdir $@) -o $@ $<
@@ -145,6 +147,10 @@ program: boop_rom.bin
 
 clean:
 	-rm -Rf $(DEPS)
-	-rm -f $(OBJS) *.elf *.bin *.hex *~
+	-rm -f $(OBJS) *.elf *.bin *.hex *.map *~
 
+clean2:
+	-rm -Rf $(DEPS)
+	-rm -f $(OBJS) *.elf *.hex *.map *~
+	
 -include $(DEPS:=/*)

@@ -188,7 +188,7 @@ void scanKeys(void);
 void waitKeyUp(void);
 void waitKeyDown(void);
 /// Return 1 if any key is pressed.
-inline char isKeyPressed (void);
+char isKeyPressed (void);
 signed char getNumKeyValue(void);
 unsigned char getKeynum(void);
 

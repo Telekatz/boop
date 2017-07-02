@@ -52,7 +52,7 @@ void waitKeyDown(void)
 	setBacklight(BL_AUTO);	// pwm value
 }
 
-inline char isKeyPressed (void)
+char isKeyPressed (void)
 {
    return ((keys[0] != 0) || (keys[1] != 0));
 }

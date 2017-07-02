@@ -1,0 +1,2 @@
+#define SVNVERSION 00
+
