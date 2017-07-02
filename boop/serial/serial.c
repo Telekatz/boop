@@ -52,7 +52,9 @@ extern void uart0_irq(void);
  */
 int serial_flush_input(void)
 {
-	volatile unsigned int tmp;
+	volatile unsigned int tmp=0;
+
+	(void)(tmp);
 
 	/* keep on reading as long as the receiver is not empty */
 	while(RX_DATA(U0LSR)) {

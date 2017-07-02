@@ -372,8 +372,9 @@ void __attribute__ ((section (".text.fastcode"))) _do_rcuAlpha (
 void __attribute__ ((section (".text.fastcode"))) _do_rcuS (
    unsigned char x, unsigned char y, unsigned char m)
 {
-	unsigned char q;
+	volatile unsigned char q=0;
 	
+	(void)(q);
 	
 	if((x > BORDER_RIGHT))// | (x < BORDER_LEFT))
 		return;
@@ -429,7 +430,7 @@ void __attribute__ ((section (".text.fastcode"))) _do_rcuS (
 void __attribute__ ((section(".text.fastcode"))) _draw_block(unsigned char x, unsigned char y, unsigned char w, unsigned char h, unsigned char c, unsigned char m)
 {
 	unsigned char q,s;
-	unsigned char yy,ss,vv,ww,xx;
+	unsigned char yy,vv,ww,xx;
 	unsigned char segm;
 	is_drawing++;
 
@@ -441,7 +442,6 @@ void __attribute__ ((section(".text.fastcode"))) _draw_block(unsigned char x, un
 	if(h)
 	{
 		yy = h;
-		ss = y >> 3;
 		vv = y & 0x07;
 	
 		ww = yy & 0x07;
@@ -555,7 +555,7 @@ void __attribute__ ((section(".text.fastcode"))) _draw_hline(unsigned char x, un
 void __attribute__ ((section(".text.fastcode"))) _draw_vline(unsigned char x, unsigned char y, unsigned char l, unsigned char c, unsigned char m)
 {
 	unsigned char s;
-	unsigned char yy,ss,vv,ww,xx;
+	unsigned char yy,vv,ww,xx;
 	unsigned char segm;
 	is_drawing++;
 
@@ -567,7 +567,6 @@ void __attribute__ ((section(".text.fastcode"))) _draw_vline(unsigned char x, un
 		
 		
 		yy = l;
-		ss = y >> 3;
 		vv = y & 0x07;
 	
 		ww = yy & 0x07;

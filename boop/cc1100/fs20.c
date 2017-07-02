@@ -51,7 +51,7 @@ void fs20_decoder(void) {
 	unsigned char FS20inbit = 0;
 	unsigned char FS20protocol = PROTOCOL_UNKNOWN;
 	unsigned short tempbyte = 0;
-	unsigned char finish = 0;
+//	unsigned char finish = 0;
 	
 	unsigned long pulse = 0;
 	unsigned long space = 0;
@@ -77,7 +77,7 @@ void fs20_decoder(void) {
 	cc1100_strobe(SRX);
 	
 	serial_puts("\n\r");
-	
+
 	while(KEY_Exit) {};
 	while(!KEY_Exit)
 	{
@@ -188,7 +188,7 @@ void fs20_decoder(void) {
 				}
 				
 				if(FS20protocol == PROTOCOL_WEATHER) {
-					if(FS20_BETWEEN(pulse, 685, 1020) && FS20_BETWEEN(space, 200, 533))
+				  if(FS20_BETWEEN(pulse, 685, 1020) && FS20_BETWEEN(space, 200, 533))
 						FS20inbit = 0;
 					else if(FS20_BETWEEN(pulse, 200, 533) && FS20_BETWEEN(space, 685, 1020))
 						FS20inbit = (1<<3);
@@ -215,7 +215,9 @@ void fs20_decoder(void) {
 								FS20bitcounter = 0;	
 							}
 							else {
-								tempbyte = (tempbyte>>=1) | FS20inbit;
+								//tempbyte = (tempbyte>>=1) | FS20inbit;
+							  tempbyte>>=1;
+							  tempbyte |= FS20inbit;
 								if(FS20bitcounter++ == 8) {
 									FS20inbyte[FS20bytecounter] = tempbyte;
 									tempbyte = 0;
@@ -263,9 +265,7 @@ void fs20_decoder(void) {
 										FS20bytecounter++;
 										FS20parity = 0;
 										if(FS20bytecounter == 0x0a) {	//packet full received
-											unsigned char dec[8];
 
-											dec[0] = FS20inbyte[1] ^ 0x89;
 											for(x=9;x>1;x--) {
 												FS20inbyte[x] = (FS20inbyte[x-1] + 0x24) ^ FS20inbyte[x];
 											}
@@ -329,7 +329,7 @@ void fs20_decoder(void) {
 					}
 
 					serial_puts("\n\r");
-					finish = 0;
+					//finish = 0;
 					FS20bytecounter = 0;
 					FS20protocol = PROTOCOL_UNKNOWN;
 				}

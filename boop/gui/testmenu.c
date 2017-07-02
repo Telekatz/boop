@@ -907,10 +907,8 @@ void test_irrec(void) {
 }
 
 void erase_flash1(void)
-{	int x;
-
-	x = eraseFlash(1);
-	
+{
+	eraseFlash(1);
 }
 
 void test_sid(void) {
@@ -1062,8 +1060,7 @@ void test_sid(void) {
 }
 
 void test_click(FORM* form, CONTROL* control) {
-	unsigned char x;
-	x=msgbox(45,BC_OKOnly | BC_DefaultButton1,control->caption);
+	msgbox(45,BC_OKOnly | BC_DefaultButton1,control->caption);
 	form_draw(form);
 }
 
@@ -1076,8 +1073,7 @@ void test3_click(FORM* form, CONTROL* control) {
 }
 
 void test_numbox(FORM* form, CONTROL* control) {
-	unsigned char x;
-	x=msgbox(30,BC_OKOnly | BC_DefaultButton1,"numbox click");
+	msgbox(30,BC_OKOnly | BC_DefaultButton1,"numbox click");
 	form_draw(form);
 }
 
@@ -1091,14 +1087,12 @@ void test_numchange(FORM* form, CONTROL* control) {
 }
 
 void test_change(FORM* form, CONTROL* control) {
-	unsigned short x;
-	x=msgbox(30,BC_OKOnly | BC_DefaultButton1,"geaendert");
+	msgbox(30,BC_OKOnly | BC_DefaultButton1,"geaendert");
 	form_draw(form);
 }
 
 void formload (FORM* form)
 {
-	unsigned char x;
 	struct RFendpoint_* cur_ep;
 	
 	cur_ep = openEP(&(form->controls[7])->tag1, 1, packet_RFenc);
@@ -1110,12 +1104,11 @@ void formload (FORM* form)
 		RF_changestate(RFrx);
 	}
 	
-	x=msgbox(50,BC_OKOnly | BC_DefaultButton1,"Form open");
+	msgbox(50,BC_OKOnly | BC_DefaultButton1,"Form open");
 }
 
 void formclose (FORM* form)
 {
-	unsigned char x;
 	
 	if (form->tag)
 	{
@@ -1123,7 +1116,7 @@ void formclose (FORM* form)
 		RF_changestate(RFwor);
 	}
 
-	x=msgbox(50,BC_OKOnly | BC_DefaultButton1,"Form close");
+	msgbox(50,BC_OKOnly | BC_DefaultButton1,"Form close");
 	
 }
 

@@ -160,7 +160,7 @@ void printTime (unsigned char x, unsigned char y, struct time_* t, unsigned char
 void printDate (unsigned char x, unsigned char y, struct date_* d, unsigned char format)
 {
 	unsigned char f;
-	char s[16];
+	char s[17];
 
 	f=activefont;
 	set_font(SMALLFONT);

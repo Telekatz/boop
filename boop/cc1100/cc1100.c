@@ -176,6 +176,8 @@ unsigned char cc1100_write(unsigned char addr,unsigned char* data, unsigned char
 	unsigned short i;
 	unsigned char status;
 	unsigned char x;
+
+	(void)(x);
 	
 	FIOCLR0 = CS1;
 	while (FIOPIN0 & MISO1);
@@ -197,8 +199,10 @@ unsigned char cc1100_write(unsigned char addr,unsigned char* data, unsigned char
 unsigned char cc1100_write1(unsigned char addr,unsigned char data) {
 
 	unsigned char status;
-	unsigned char x;
+	volatile unsigned char x=0;
 	
+	(void)(x);
+
 	FIOCLR0 = CS1;
 	while (FIOPIN0 & MISO1);
 	SSPDR = (addr | WRITE);
