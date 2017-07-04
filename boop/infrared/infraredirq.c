@@ -36,6 +36,21 @@ extern ir_fn	irEncoder;
 void __attribute__ ((section(".text.fastcode"))) irIRQ(void)
 {
 	c_cnt++;
+
+	irEncoder();
+
+	if(mod_enable) {
+    PWMMR5 = 200;     // pwm value
+    PWMLER = 0x20;    //Latch Enable
+	} else {
+	  PWMMR5 = 0;     // pwm value
+	  PWMLER = 0x20;    //Latch Enable
+	}
+
+
+
+
+	/*
 	if(c_cnt <= hi_border)
 	{
 		FIOSET0 = (mod_enable<<21);
@@ -61,7 +76,7 @@ void __attribute__ ((section(".text.fastcode"))) irIRQ(void)
 			}
 		}
 	}
-
+*/
 	T1IR = 1;
 //	VICVectAddr = 0;
 }

@@ -32,6 +32,8 @@ extern volatile unsigned char mod_enable;
 extern volatile unsigned int cycles;
 extern volatile unsigned long keyMap[42];
 
+volatile unsigned long act_freq;
+
 /*
 #define RAW_IDLE	0x00
 #define RAW_HI	0x01
@@ -290,6 +292,10 @@ void __attribute__ ((section(".text.fastcode"))) LIRC_Encode (void) {
 				ir.state = LIRC_HEAD_P;
 			}
 	}
+
+
+	T1MR0 = (15000000 / (act_freq)) * cycles;
+
 }
 
 void LIRC_Init(unsigned char map)
@@ -340,6 +346,8 @@ void LIRC_Init(unsigned char map)
 			}
 		}
 		
+		act_freq = freq;
+
 		T1MR0 = 15000000 / (freq * lo_border);
 		
 		

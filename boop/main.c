@@ -198,6 +198,8 @@ void cpu_idle ()
 	if(U0SCR)
 		return;
 		
+	return;
+
 	/* only idle mode instead of power down when:
 	 *	* backlight on
 	 *	* IR transmission
