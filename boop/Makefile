@@ -18,10 +18,10 @@
 ###############################################################
 
 
-ARMBASE=/opt/toolchains/gcc-arm-none-eabi-4_9-2014q4
-INCLUDEPATH=$(ARMBASE)/include
-ARMPATH=$(ARMBASE)/bin
-TOOLPREFIX=/arm-none-eabi-
+#ARMBASE=/opt/toolchains/gcc-arm-none-eabi-4_9-2014q4
+#INCLUDEPATH=$(ARMBASE)/include
+#ARMPATH=$(ARMBASE)/bin
+TOOLPREFIX= arm-none-eabi-
 BOOTLOADER_DEVICE=/dev/ttyUSB0
 
 ###############################################################
