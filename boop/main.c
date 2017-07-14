@@ -31,6 +31,7 @@
 //#include "sounds.h"
 //#include "sound3.h"
 #include "infrared.h"
+#include "pwm.h"
 #include "codes.h"
 #include "encoders.h"
 #include "ir_selector.h"
@@ -257,6 +258,8 @@ int main(void)
 
 	initIR();
 	startIrIRQ();
+
+	PWM_init();
 
 	RF_init();
 	load_RF_setting();

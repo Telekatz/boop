@@ -23,6 +23,7 @@
 #include "keyboard.h"
 #include "rf.h"
 #include "cc1100.h"
+#include "pwm.h"
 
 static unsigned int c_cnt = 0;
 static unsigned int b_len = 0;
@@ -40,14 +41,10 @@ void __attribute__ ((section(".text.fastcode"))) irIRQ(void)
 	irEncoder();
 
 	if(mod_enable) {
-    PWMMR5 = 200;     // pwm value
-    PWMLER = 0x20;    //Latch Enable
+	  PWM_set_IR_duty_cycle(ir.duty_cycle);
 	} else {
-	  PWMMR5 = 0;     // pwm value
-	  PWMLER = 0x20;    //Latch Enable
+	  PWM_set_IR_duty_cycle(0);
 	}
-
-
 
 
 	/*
@@ -77,6 +74,8 @@ void __attribute__ ((section(".text.fastcode"))) irIRQ(void)
 		}
 	}
 */
+	//T1TCR   = 0x03;
+
 	T1IR = 1;
 //	VICVectAddr = 0;
 }

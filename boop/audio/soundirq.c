@@ -211,7 +211,7 @@ void __attribute__ ((section(".text.fastcode"))) soundIRQ (void)
 		}
 	}
 	
-	// backlight pwm
+/*	// backlight pwm
 	cmp_val += bl_val;
 	if (cmp_val >= 63) 
 	{
@@ -222,5 +222,5 @@ void __attribute__ ((section(".text.fastcode"))) soundIRQ (void)
 	{
 		FIODIR0 &= ~(1<<4);		// sck0/P0.4
 	}
-
+*/
 }

@@ -63,28 +63,8 @@ struct IR_VARS_ {
 			unsigned long		actpre_data;
 			unsigned long		post_data;          // data which the remote sends after actual keycode
 			unsigned long		actpost_data;
-			unsigned short		flags;				// flags
-			unsigned short		phead,shead;		// header
-			unsigned short		plead;				// leading pulse
-			unsigned short		ptrail;				// trailing pulse
-			unsigned short		pfoot,sfoot;		// foot
-			unsigned short		pre_p,pre_s;        // signal between pre_data and keycode
-			unsigned short		post_p,post_s;      // signal between keycode and post_code
-			unsigned short		gap;
-			unsigned short		repeat_gap;
-			unsigned short		prepeat,srepeat;
-			unsigned short		cycles_counter;
-			unsigned char		bits;				// bits (length of code)
-			unsigned char		pre_data_bits;		// length of pre_data
-			unsigned char		post_data_bits;		// length of post_data
-			unsigned char		rc6_bit;			// doubles signal length of this bit (only used for RC-6)
-			unsigned char		pthree,sthree;		// 3 (only used for RC-MM)
-			unsigned char		ptwo,stwo;			// 2 (only used for RC-MM)
-			unsigned char		pone,sone;			// 1
-			unsigned char		pzero,szero;		// 0
-			unsigned char		min_repeat;
+			unsigned long		cycles_counter;
 			unsigned char		bit;
-			unsigned char		map;
 			unsigned char		stop;
 			unsigned char		repeats;
 		} lirc;
@@ -93,6 +73,7 @@ struct IR_VARS_ {
 	unsigned int	actcmd;
 	unsigned char	toggle;
 	unsigned char	state;
+	unsigned char duty_cycle;
 } ir;
 
 

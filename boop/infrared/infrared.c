@@ -25,6 +25,7 @@
 #include "encoders.h"
 #include "codes.h"
 #include "ir_selector.h"
+#include "pwm.h"
 
 volatile unsigned char mod_enable;
 volatile unsigned char hi_border;
@@ -109,45 +110,14 @@ void defStopper(void)
 void runIR(void)
 {
 	T1TCR		= 0x01;
-
-	/*
-  PWMTC = 0;
-  PWMPR = 7;
-  PWMMR0 = 0x1E6; // pwm rate
-  PWMMR2 = 0x00;  // pwm value
-  PWMLER = 0x05;
-  PWMMCR = 0x03;
-  PWMPCR = (1<<10);
-  PWMTCR = 0x03;
-  PWMTCR = 0x09;
-  */
-
-	PINSEL1 &= ~(3 << (10));      // IO
-	PINSEL1 |=  (1 << (10));       // PWM5
-
-  PWMTC = 0;        //Timer Counter
-  PWMPR = 0;        //Prescale Register
-  PWMPC = 0;        //Prescale Counter
-
-  PWMMR0 = 416;     // pwm rate
-  PWMMR5 = 0;     // pwm value
-
-  PWMLER = 0x21;    //Latch Enable
-  PWMMCR = 0x02;    //Match Control
-  PWMPCR |= (1<<13);
-  PWMTCR = 0x03;
-  PWMTCR = 0x09;
-
-  //FIOSET0 = (1<<21);
-
+	PWM_set_IR_duty_cycle(0);
 
 }
 
 void stopIR(void)
 {
 	T1TCR		= 0x03;
-  PWMMR5 = 0;     // pwm value
-  PWMLER = 0x21;    //Latch Enable
+	PWM_set_IR_duty_cycle(0);
 
 }
 
