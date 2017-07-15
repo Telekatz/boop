@@ -21,14 +21,37 @@
 #include "timerfuncs.h"
 #include "lcd.h"
 
+#define TIMER_PRESCALER		20
+
 struct CB callbacks[MAX_CB];
 unsigned long* timeouts[MAX_TO];
+unsigned char timerPrescaler = TIMER_PRESCALER;
+unsigned char bl_val, cmp_val;	// backlight PWM
 
-
-// wird alle 5 ms aufgerufen (s. startTimerIRQ() in timerfuncs)
+// wird alle 0.25 ms aufgerufen (s. startTimerIRQ() in timerfuncs)
 // bearbeitet eingetragene "timer"
 void __attribute__ ((section(".text.fastcode"))) timerIRQ(void)
 {
+	// backlight pwm
+	cmp_val += bl_val;
+	if (cmp_val >= 63)
+	{
+		FIODIR0 |= (1<<4);		// sck0/P0.4
+		cmp_val -= 63;
+	}
+	else
+	{
+		FIODIR0 &= ~(1<<4);		// sck0/P0.4
+	}
+
+
+	if(--timerPrescaler) {
+		T0IR = 1;
+		return;
+	}
+	timerPrescaler = TIMER_PRESCALER;
+
+	//5 msec intervall time
 	unsigned int cnt;
 	struct CB *cur_cb;
 

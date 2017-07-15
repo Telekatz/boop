@@ -42,7 +42,7 @@ void startTimerIRQ(void)
 	T0TCR = 0x02;	// reset timer
 	T0TC = 1870;
 	T0PR = 0x0e; 	// 15.000.000 Hz / 15 = 1.000.000 Hz --> PR = 15 - 1 = 0x0e
-	T0MR0 = 5000;	//  1.000.000 Hz / 5000 =  200 Hz = 5 msec intervall time
+	T0MR0 = 250;	//  1.000.000 Hz / 250 =  4000 Hz = 0,25msec intervall time
 	T0MCR = 0x03;	// reset and issue IRQ on TC == MR0
 	T0TCR = 0x01;	// enable timer
 	

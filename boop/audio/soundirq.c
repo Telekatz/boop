@@ -35,7 +35,6 @@ extern volatile char last_sample;
 */
 
 unsigned int tval;
-unsigned char bl_val, cmp_val;	// backlight PWM
 unsigned int slen;
 unsigned char *sdata;
 unsigned char sact;
@@ -211,16 +210,4 @@ void __attribute__ ((section(".text.fastcode"))) soundIRQ (void)
 		}
 	}
 	
-/*	// backlight pwm
-	cmp_val += bl_val;
-	if (cmp_val >= 63) 
-	{
-		FIODIR0 |= (1<<4);		// sck0/P0.4
-		cmp_val -= 63;
-	} 
-	else 
-	{
-		FIODIR0 &= ~(1<<4);		// sck0/P0.4
-	}
-*/
 }
