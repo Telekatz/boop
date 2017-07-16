@@ -29,6 +29,7 @@
 #include "ir_selector.h"
 #include "infrared.h"
 #include "sid.h"
+#include "sidfiles.h"
 #include "timerfuncs.h"
 #include "sound.h"
 #include "lpc2220.h"
@@ -934,6 +935,9 @@ void test_sid(void) {
 	draw_string (0, 95, "color keys", LCD_COLOR_B, DRAW_PUT);
 	draw_string (0, 104, "set waveform", LCD_COLOR_B, DRAW_PUT);
 	
+	draw_string (0, 120, "Mute", LCD_COLOR_B, DRAW_PUT);
+	draw_string (0, 129, "Raiders March", LCD_COLOR_B, DRAW_PUT);
+
 	sysInfo |= SYS_IR;
 	SID.noise = 0xaa;
 	playstate = 0x00;
@@ -1050,6 +1054,20 @@ void test_sid(void) {
 				playtone[2] = (unsigned char*)&song2[0];
 				
 				playtone_cb = addTimerCB(SIDplaytone, 4);
+				startCB(playtone_cb);
+			}
+		} else if (KEY_Mute)
+		{
+			if (playstate == 0)
+			{
+				playstate = 1;
+
+				playtone[0] = (unsigned char*)&song1[0];
+
+				playcounter = 0;
+				playcountermax = sizeof(song1)/14;
+
+				playtone_cb = addTimerCB(SIDplaydump, 4);
 				startCB(playtone_cb);
 			}
 		}

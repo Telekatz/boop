@@ -18,6 +18,7 @@
 
 #include "global.h"
 #include "lpc2220.h"
+#include "irq.h"
 
 void PWM_init(void)
 {
@@ -25,24 +26,44 @@ void PWM_init(void)
 	PINSEL1 &= ~(3 << (10));      // IO
 	PINSEL1 |=  (1 << (10));       // PWM5
 
-	PWMTC = 0;        //Timer Counter
-	PWMPR = 0;        //Prescale Register
-	PWMPC = 0;        //Prescale Counter
+	PWMTC = 0;			//Timer Counter
+	PWMPR = 0;			//Prescale Register
+	PWMPC = 0;			//Prescale Counter
 
-	PWMMR0 = 416;     // pwm rate
-	PWMMR5 = 0;     // pwm value
+	PWMMR0 = 416;		// pwm rate
+	PWMMR2 = 0x00;		// pwm value sound
+	PWMMR5 = 0x00;		// pwm value IR
 
-	PWMLER = 0x21;    //Latch Enable
-	PWMMCR = 0x02;    //Match Control
-	PWMPCR |= (1<<13);
+	PWMLER = 0x26;		//Latch Enable
+	PWMMCR = 0x03;		//Match Control
+	PWMPCR |= (1<<13) | (1<<10);
 	PWMTCR = 0x03;
 	PWMTCR = 0x09;
+
+	/*	PWMTC = 0;
+	PWMPR = 7;
+	PWMMR0 = 0x1E6;	// pwm rate
+	PWMMR2 = 0x00;	// pwm value
+	PWMLER = 0x05;
+	PWMPCR = (1<<10);
+*/
+
+	//VICVectAddr0 = (unsigned long)&(soundIRQ);
+	//VICVectCntl0 = VIC_SLOT_EN | INT_SRC_PWM;
+	VICIntSelect |= INT_PWM;
+	VICIntEnable = INT_PWM;
 
 }
 
 void PWM_set_frequency(unsigned long f)
 {
-	PWMMR0 = 15000000 / f;
+	if(f<5000) {
+		PWMPR = 7;
+		PWMMR0 = 1875000 / f;
+	} else {
+		PWMPR = 0;
+		PWMMR0 = 15000000 / f;
+	}
 	PWMLER |= 0x01;    //Latch Enable
 
 }

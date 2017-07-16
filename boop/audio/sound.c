@@ -20,6 +20,7 @@
 #include "sound.h"
 #include "soundirq.h"
 #include "lpc2220.h"
+#include "pwm.h"
 
 #define AUTO_OFF_TIME	0x4000
 
@@ -37,7 +38,7 @@ unsigned char timeout;
 unsigned int auto_timeout;
 
 void startSoundIRQ(void)
-{
+{/*
 	timeout = 0;
 	auto_timeout = 0;
 	out1 = 0;
@@ -57,6 +58,7 @@ void startSoundIRQ(void)
 	//VICVectCntl0 = VIC_SLOT_EN | INT_SRC_PWM;
 	VICIntSelect |= INT_PWM;
 	VICIntEnable = INT_PWM;
+	*/
 }
 
 void initSound(void)
@@ -67,12 +69,18 @@ void initSound(void)
 	tval = 0;
 	last_sample = 0;
 	bl_val = 0x3F;
+	timeout = 0;
+	auto_timeout = 0;
+	out1 = 0;
 }
 
 void switchSound(unsigned char onoff)
 {
 	if(onoff)
 	{
+
+		PWM_set_frequency(30864);
+
 		sound_shutdown = 0;
 		PINSEL0 &= ~(3 << (2 * SND_PWM)); 			// IO
 		PINSEL0 |=  (2 << (2 * SND_PWM)); 			// PWM
@@ -81,6 +89,7 @@ void switchSound(unsigned char onoff)
 		FIODIR0 |= (1<<SND_ON) | (1<<SND_EN);
 		FIOSET0  = (1<<SND_EN);
 		FIOCLR0  = (1<<SND_ON);
+
 	}
 	else
 	{

@@ -243,7 +243,7 @@ int main(void)
 	FIOSET0 |= (1<<12);
 	FIOCLR0 |= (1<<4);
 
-	setSpeed(SPEED_30);
+	setSpeed(SPEED_60);
 
 	lcd_init(0);
 	serial_init();
@@ -254,7 +254,7 @@ int main(void)
 	initKeys();
 
 	initSound();
-	startSoundIRQ();
+	//startSoundIRQ();
 
 	initIR();
 	startIrIRQ();

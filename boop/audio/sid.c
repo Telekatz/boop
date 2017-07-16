@@ -157,7 +157,7 @@ void beep(unsigned char n) {
 			SIDsetfrq(0,5001);
 			break;
 	}
-	PWMPR = 0;
+	//PWMPR = 0;
 	switchSound(SOUND_ON);
 	SID.flags |= SIDenable;
 	SID.reg[REG_Control] |= GATE;

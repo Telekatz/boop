@@ -101,12 +101,12 @@ struct SID_ {
 
 struct SID_ SID;
 
-unsigned int playtone_cb;
-unsigned char *playtone[3];
-unsigned char playstate;
-unsigned char tonelen[3];
-unsigned short playcounter;
-unsigned short playcountermax;
+extern unsigned int playtone_cb;
+extern unsigned char *playtone[3];
+extern unsigned char playstate;
+extern unsigned char tonelen[3];
+extern unsigned short playcounter;
+extern unsigned short playcountermax;
 
 void SIDsetfrq(unsigned char voice, unsigned short frq);
 void SIDsetadsr(unsigned char voice,unsigned char attack, unsigned char decay, unsigned char sustain, unsigned char release);
