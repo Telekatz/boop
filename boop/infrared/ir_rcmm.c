@@ -117,6 +117,7 @@ void __attribute__ ((section(".text.fastcode"))) RCMM_Encode (void)
 
 		
 	}
+	T1MR0 = cycles * RCMM_Module.lo_border * RCMM_Module.tval;
 }
 
 void RCMM_LoadMap(unsigned char map)

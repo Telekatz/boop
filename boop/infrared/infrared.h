@@ -78,7 +78,7 @@ struct IR_VARS_ {
 
 
 //#define setIRspeed( _m ) { if(sysInfo & 0x80) T1MR0 = _m.tval1; else T1MR0 = _m.tval; }
-#define setIRspeed( _m ) { T1MR0 = _m.tval; }
+//#define setIRspeed( _m ) { T1MR0 = _m.tval; }
 
 void __attribute__ ((section(".text.fastcode")))  defIR(void); 
 void defSender(unsigned long cmd);
@@ -90,6 +90,7 @@ void startIrIRQ(void);
 void setIR(struct irModule module);
 void runIR(void);
 void stopIR(void);
+void setIRspeed(struct irModule module);
 
 unsigned long setEncoder( unsigned char _x, unsigned char _y );
 

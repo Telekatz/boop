@@ -137,6 +137,7 @@ void __attribute__ ((section(".text.fastcode"))) SPACEENC_Encode (void)
 			}
 			break;
 	}
+	T1MR0 = cycles * SPACEENC_Module.lo_border * SPACEENC_Module.tval;
 }
 
 void SPACEENC_LoadMap(unsigned char map)

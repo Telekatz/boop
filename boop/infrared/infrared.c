@@ -114,6 +114,12 @@ void runIR(void)
 
 }
 
+void setIRspeed(struct irModule module)
+{
+	PWM_set_frequency(15000000 / (module.tval * module.lo_border));
+	ir.duty_cycle =(module.hi_border * 100) / module.lo_border;
+}
+
 void stopIR(void)
 {
 	T1TCR		= 0x03;

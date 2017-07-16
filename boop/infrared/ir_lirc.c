@@ -300,7 +300,6 @@ void __attribute__ ((section(".text.fastcode"))) LIRC_Encode (void) {
 			}
 	}
 
-
 	T1MR0 = 15 * cycles;
 
 }

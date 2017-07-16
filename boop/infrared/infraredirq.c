@@ -25,8 +25,6 @@
 #include "cc1100.h"
 #include "pwm.h"
 
-static unsigned int c_cnt = 0;
-static unsigned int b_len = 0;
 extern volatile unsigned char mod_enable;
 extern volatile unsigned char hi_border;
 extern volatile unsigned char lo_border;
@@ -36,7 +34,6 @@ extern ir_fn	irEncoder;
 
 void __attribute__ ((section(".text.fastcode"))) irIRQ(void)
 {
-	c_cnt++;
 
 	irEncoder();
 
@@ -46,36 +43,6 @@ void __attribute__ ((section(".text.fastcode"))) irIRQ(void)
 	  PWM_set_IR_duty_cycle(0);
 	}
 
-
-	/*
-	if(c_cnt <= hi_border)
-	{
-		FIOSET0 = (mod_enable<<21);
-	}
-	else
-	{
-		FIOCLR0 = (1<<21);
-		if(c_cnt >= lo_border)
-		{
-			c_cnt = 0;
-			b_len++;
-			if(b_len >= cycles)
-			{
-				irEncoder();
-				b_len = 0;
-				
-				if(!hi_border) {	//RF mode
-					if(mod_enable)
-						FIOCLR0 = GDO0;
-					else
-						FIOSET0 = GDO0;
-				}
-			}
-		}
-	}
-*/
-	//T1TCR   = 0x03;
-
 	T1IR = 1;
-//	VICVectAddr = 0;
+
 }

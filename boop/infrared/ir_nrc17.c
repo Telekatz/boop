@@ -115,6 +115,7 @@ void __attribute__ ((section(".text.fastcode"))) NRC17_Encode(void)
 			break;
 
 	}
+	T1MR0 = cycles * NRC17_Module.lo_border * NRC17_Module.tval;
 }
 /*
 void NRC17_CopyMap(unsigned char xtra, unsigned short *map)
