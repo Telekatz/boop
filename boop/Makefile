@@ -25,8 +25,9 @@
 #ARMPATH = $(ARMBASE)/bin/
 TOOLPREFIX = arm-none-eabi-
 LPCTOOL = lpctool
-OPENOCDPATH = F:\Tools\OpenOCD
-OPENOCD = $(OPENOCDPATH)\openocd.exe -f betty.cfg -f $(OPENOCDPATH)\interface\uniprog.cfg 
+OPENOCDPATH = F:\Tools\OpenOCD_0_10
+#OPENOCD = $(OPENOCDPATH)\bin\openocd.exe -f $(OPENOCDPATH)\scripts\interface\jlink.cfg -f betty.cfg 
+OPENOCD = $(OPENOCDPATH)\bin\openocd.exe -f $(OPENOCDPATH)\scripts\interface\uniprog.cfg -f betty.cfg 
 
 ###############################################################
 #####
@@ -42,12 +43,9 @@ OD = $(ARMPATH)$(TOOLPREFIX)objdump
 SIZE = $(ARMPATH)$(TOOLPREFIX)size
 
 CPUFLAGS = -mcpu=arm7tdmi-s
-OPTFLAGS = -Os
-CFLAGS = -Wall -mthumb-interwork 
+CFLAGS = -Wall -mthumb-interwork -g3  -c
 INC = -I. -Iinterrupt -Idisplay -Ikeyboard -Iaudio -Iinfrared -Iserial -Iflash -Icc1100 -Igui -Itimer -Igames -Iadc -Irtc  -Itools
 ASFLAGS = -g -I. -mthumb-interwork 
-#LDFLAGS = -Tlpc2220_rom.ld -Map boop.map
-#LIBS = -lc -lgcc
 LDFLAGS = -mthumb-interwork -nostartfiles -Xlinker -Map -Xlinker boop.map -Tlpc2220_rom.ld
 THUMBFLAGS = -mthumb
 
@@ -55,6 +53,9 @@ COMPILE = $(CC) $(CPUFLAGS) $(CFLAGS) $(INC)
 
 ifeq ($(MAKECMDGOALS),debug)
 	COMPILE += -D DEBUGMODE
+	OPTFLAGS = -O0
+else
+	OPTFLAGS = -Os
 endif
 
 ifeq ($(MAKECMDGOALS),release)

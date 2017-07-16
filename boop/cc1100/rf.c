@@ -413,7 +413,7 @@ void startRFIRQ(void) {
 	VICIntEnable = INT_EINT0;
 }
 
-inline void stopRFIRQ(void) {
+void stopRFIRQ(void) {
 	VICIntEnClr = INT_EINT0;
 }
 

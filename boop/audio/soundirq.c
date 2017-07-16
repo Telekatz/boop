@@ -21,6 +21,7 @@
 #include "sound.h"
 #include "sid.h"
 #include "lpc2220.h"
+#include "pwm.h"
 
 #define AUTO_OFF_TIME	0x4000
 
@@ -35,20 +36,21 @@ extern volatile char last_sample;
 */
 
 unsigned int tval;
-unsigned char bl_val, cmp_val;	// backlight PWM
 unsigned int slen;
 unsigned char *sdata;
 unsigned char sact;
 unsigned char out1;
 unsigned char last_sample;
 unsigned char sound_shutdown;
+unsigned char tcount;
 
 const unsigned char prevvoice[3] = {2,0,1};
 
 void __attribute__ ((section(".text.fastcode"))) soundIRQ (void)
 {
 	PWMIR = 0x01;
-	
+
+/*
 	// play sample
 	if(sact != 0)
 	{
@@ -76,8 +78,9 @@ void __attribute__ ((section(".text.fastcode"))) soundIRQ (void)
 			PWMLER = 0x04;
 		}
 	}
+
 	// synthesize
-	else if(SID.flags & SIDenable) 
+	else */if(SID.flags & SIDenable)
 	{
 		unsigned short tempphase;
 		unsigned char x;
@@ -211,16 +214,4 @@ void __attribute__ ((section(".text.fastcode"))) soundIRQ (void)
 		}
 	}
 	
-	// backlight pwm
-	cmp_val += bl_val;
-	if (cmp_val >= 63) 
-	{
-		FIODIR0 |= (1<<4);		// sck0/P0.4
-		cmp_val -= 63;
-	} 
-	else 
-	{
-		FIODIR0 &= ~(1<<4);		// sck0/P0.4
-	}
-
 }

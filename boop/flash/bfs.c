@@ -672,13 +672,13 @@ unsigned char readByte(unsigned long ByteAddr)
 unsigned short readWord(unsigned long WordAddr)
 {
 	//addr = unsigned short address
-	int Offset;
+	//int Offset;
 	unsigned short Word;
 
 	//ASSERT((WordAddr * 2) >= FLASH1_BASE);
 	//ASSERT((WordAddr * 2) < (FLASH1_BASE + FLASH_SIZE));
 
-	Offset = (WordAddr * 2) - FLASH1_BASE;
+	//Offset = (WordAddr * 2) - FLASH1_BASE;
 
 	Word = *((unsigned short *)(WordAddr<<1));
 

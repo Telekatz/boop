@@ -126,6 +126,7 @@ void __attribute__ ((section(".text.fastcode"))) ITT_Encode (void)
 			}
 			break;
 	}
+	T1MR0 = cycles * ITT2_Module.lo_border * ITT2_Module.tval;
 }
 
 void ITT_LoadMap(unsigned char map)

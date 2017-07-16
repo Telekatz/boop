@@ -25,18 +25,16 @@
 #include "lcd.h"
 #include "rf.h"
 #include "cc1100.h"
+#include "pwm.h"
 
 #include "global.h"
 
 extern volatile unsigned char mod_enable;
 extern volatile unsigned int cycles;
-extern volatile unsigned long keyMap[42];
 
-/*
-#define RAW_IDLE	0x00
-#define RAW_HI	0x01
-#define RAW_LO	0x02
-*/
+struct CODE_TABLE_L *lirctable;
+
+unsigned int prev_cycles;  /*  needed for handling of b&o specific protocol added MN2017325 */
 
 #define LIRC_IDLE	        0x00
 #define LIRC_HEAD_P	        0x01
@@ -73,7 +71,7 @@ const struct irModule LIRC_Module =
 
 unsigned char __attribute__ ((section(".text.fastcode"))) send_data (unsigned long data, unsigned char pulse) {
 	
-	const unsigned char* bittimes[4] = {&(ir.lirc.pzero), &(ir.lirc.pone), &(ir.lirc.ptwo), &(ir.lirc.pthree)};
+	const unsigned short* bittimes[4] = {&(lirctable->pzero), &(lirctable->pone), &(lirctable->ptwo), &(lirctable->pthree)};
 	unsigned char notpulse = 1;
 	
 	if(pulse) {
@@ -112,7 +110,7 @@ unsigned char __attribute__ ((section(".text.fastcode"))) send_data (unsigned lo
 			cycles = bittimes[0][notpulse];
 			mod_enable = pulse;
 		}
-		if((ir.lirc.bit+1 == ir.lirc.rc6_bit))
+		if((ir.lirc.bit+1 == lirctable->rc6_bit))
 			cycles <<= 1;
 	}
 	else {
@@ -132,86 +130,97 @@ unsigned char __attribute__ ((section(".text.fastcode"))) send_data (unsigned lo
 }
 
 void __attribute__ ((section(".text.fastcode"))) LIRC_Encode (void) {
-	unsigned short gap;
+	unsigned long gap;
 
 	ir.lirc.cycles_counter += cycles;
 	
 	switch(ir.state)
 	{
 		case LIRC_IDLE:
-			cycles = ir.lirc.pone;
+			cycles = lirctable->pone;
 			mod_enable = 0;
 			break;
 		case LIRC_HEAD_P:
 			ir.lirc.cycles_counter = 0;
-			if(has_header && (!ir.lirc.repeats || (!(ir.lirc.flags&LIRC_NO_HEAD_REP) && !has_repeat) || (ir.lirc.flags&LIRC_REPEAT_HEADER)))  {	// 
+			if(has_header && (!ir.lirc.repeats || (!(lirctable->flags&LIRC_NO_HEAD_REP) && !has_repeat) || (lirctable->flags&LIRC_REPEAT_HEADER)))  {	//
 				mod_enable = 1;
-				cycles = ir.lirc.phead;
+				cycles = lirctable->phead;
 				ir.state++;
 				break;
 		case LIRC_HEAD_S:
 				mod_enable = 0;
-				cycles = ir.lirc.shead;
+				cycles = lirctable->shead;
 				ir.state++;
 				break;
 			}
 			ir.state = LIRC_LEAD_P;
 		case LIRC_LEAD_P:
-			if(ir.lirc.plead) {
+			if(lirctable->plead) {
 				mod_enable = 1;
-				cycles = ir.lirc.plead;
+				cycles = lirctable->plead;
 				ir.state++;
 				break;
 			}
 			ir.state++;
 		case LIRC_PRE_DAT_P:
 			if(!has_repeat || !(ir.lirc.repeats)) {
-				if(ir.lirc.pre_data_bits) {
+				if(lirctable->pre_data_bits) {
 					send_data(ir.lirc.pre_data,1);
 					ir.state++;
 					break;
 		case LIRC_PRE_DAT_S:
 					ir.lirc.pre_data <<= send_data(ir.lirc.pre_data,0);
-					if(ir.lirc.bit >= ir.lirc.pre_data_bits)
+					if(ir.lirc.bit >= lirctable->pre_data_bits)
 						ir.state++;
 					else
 						ir.state--;
 					break;		
 		case LIRC_PRE_P:
-					if(ir.lirc.pre_p && ir.lirc.pre_s) {
+					if(lirctable->pre_p && lirctable->pre_s) {
 						mod_enable = 1;
-						cycles = ir.lirc.pre_p;
+						cycles = lirctable->pre_p;
 						ir.state++;
 						break;
 		case LIRC_PRE_S:
 						mod_enable = 0;
-						cycles = ir.lirc.pre_s;
+						cycles = lirctable->pre_s;
 						ir.state++;
 						break;
 					}
 				}
-				ir.state = LIRC_DATA_P;	
+				ir.state = LIRC_DATA_P;
+				prev_cycles = 0;
 		case LIRC_DATA_P:
 				send_data(ir.cmd,1);
 				ir.state++;
 				break;
 		case LIRC_DATA_S:
 				ir.cmd <<= send_data(ir.cmd,0);
-				if(ir.lirc.bit >= ir.lirc.pre_data_bits + ir.lirc.bits)
+				/*  handling for b&o specific protocol added MN2017325
+				special r-bit coding, if current bit is equal previous bit     */
+				if(is_BO) {
+					if (prev_cycles  == cycles) {
+						prev_cycles = cycles;
+						cycles   = lirctable->szero * 2 ;
+					} else {
+						prev_cycles = cycles;
+					}
+				}
+				if(ir.lirc.bit >= lirctable->pre_data_bits + lirctable->bits)
 					ir.state++;
 				else
 					ir.state--;
 				break;
 		case LIRC_POST_P:
-				if(ir.lirc.post_data_bits) {
-					if(ir.lirc.post_p && ir.lirc.post_s) {
+				if(lirctable->post_data_bits) {
+					if(lirctable->post_p && lirctable->post_s) {
 						mod_enable = 1;
-						cycles = ir.lirc.post_p;
+						cycles = lirctable->post_p;
 						ir.state++;
 						break;
 		case LIRC_POST_S:
 						mod_enable = 0;
-						cycles = ir.lirc.post_s;
+						cycles = lirctable->post_s;
 						ir.state++;
 						break;
 					}
@@ -221,8 +230,8 @@ void __attribute__ ((section(".text.fastcode"))) LIRC_Encode (void) {
 					ir.state++;
 					break;
 		case LIRC_POST_DAT_S:
-					ir.lirc.post_data <<= send_data(ir.lirc.post_data,0);
-					if(ir.lirc.bit >= ir.lirc.pre_data_bits + ir.lirc.bits +ir.lirc.post_data_bits)
+		  ir.lirc.post_data <<= send_data(ir.lirc.post_data,0);
+					if(ir.lirc.bit >= lirctable->pre_data_bits + lirctable->bits + lirctable->post_data_bits)
 						ir.state = LIRC_TRAIL_P;
 					else
 						ir.state--;
@@ -233,33 +242,33 @@ void __attribute__ ((section(".text.fastcode"))) LIRC_Encode (void) {
 		case LIRC_REPEAT_P:
 			if(has_repeat && ir.lirc.repeats) {
 				mod_enable = 1;
-				cycles = ir.lirc.prepeat;
+				cycles = lirctable->prepeat;
 				ir.state++;
 				break;
 		case LIRC_REPEAT_S:
 				mod_enable = 0;
-				cycles = ir.lirc.srepeat;
+				cycles = lirctable->srepeat;
 				ir.state++;
 				break;
 			}
 			ir.state = LIRC_TRAIL_P;
 		case LIRC_TRAIL_P:
-			if(ir.lirc.ptrail) {
+			if(lirctable->ptrail) {
 				mod_enable = 1;
-				cycles = ir.lirc.ptrail;
+				cycles = lirctable->ptrail;
 				ir.state++;
 				break;
 			}
 			ir.state++;
 		case LIRC_FOOT_S:
-			if(has_foot && (!ir.lirc.repeats || !(ir.lirc.flags&LIRC_NO_FOOT_REP)) && (!has_repeat || !ir.lirc.repeats)) {
+			if(has_foot && (!ir.lirc.repeats || !(lirctable->flags&LIRC_NO_FOOT_REP)) && (!has_repeat || !ir.lirc.repeats)) {
 				mod_enable = 0;
-				cycles = ir.lirc.sfoot;
+				cycles = lirctable->sfoot;
 				ir.state++;
 				break;
 		case LIRC_FOOT_P:
 				mod_enable = 1;
-				cycles = ir.lirc.pfoot;
+				cycles = lirctable->pfoot;
 				ir.state++;
 				break;
 			}
@@ -271,17 +280,17 @@ void __attribute__ ((section(".text.fastcode"))) LIRC_Encode (void) {
 			ir.lirc.pre_data = ir.lirc.actpre_data;
 			ir.lirc.post_data = ir.lirc.actpost_data;
 			
-			if((ir.lirc.repeat_gap && has_repeat && ir.lirc.repeats) | (is_RF && (ir.lirc.repeats >= ir.lirc.min_repeat)))
-				gap = ir.lirc.repeat_gap;
+			if((lirctable->repeat_gap && has_repeat && ir.lirc.repeats) | (is_RF && (ir.lirc.repeats >= lirctable->min_repeat)))
+				gap = lirctable->repeat_gap;
 			else
-				gap = ir.lirc.gap;
+				gap = lirctable->gap;
 			
 			if(is_const && (ir.lirc.cycles_counter < gap))
 				cycles = gap - ir.lirc.cycles_counter;
 			else
 				cycles = gap;
 			
-			if((ir.lirc.repeats >= ir.lirc.min_repeat) && ir.lirc.stop) {
+			if((ir.lirc.repeats >= lirctable->min_repeat) && ir.lirc.stop) {
 				ir.state = LIRC_IDLE;
 			}
 			else {
@@ -290,12 +299,14 @@ void __attribute__ ((section(".text.fastcode"))) LIRC_Encode (void) {
 				ir.state = LIRC_HEAD_P;
 			}
 	}
+
+	T1MR0 = 15 * cycles;
+
 }
 
 void LIRC_Init(unsigned char map)
 {	
 	unsigned long freq;
-	struct CODE_TABLE_L *lirctable;
 
 	if(map < LIRC.num_tables) {
 		
@@ -305,90 +316,32 @@ void LIRC_Init(unsigned char map)
 		setIR(LIRC_Module);
 		
 		if(lirctable->flags&LIRC_RF) {
-			hi_border = 0;
-			lo_border = 1;
+		  ir.duty_cycle = 50;
 			freq = 20000;
 		}
 		else {
 			freq = lirctable->freq;
 			if(!freq)
 				freq = 38000;
-			
-			if(lirctable->duty_cycle == 0) {	//default 50%
-				hi_border = 1;
-				lo_border = 2;		
-			}
-			else if(lirctable->duty_cycle <= 25) {
-				hi_border = 1;
-				lo_border = 4;
-			}
-			else if(lirctable->duty_cycle <= 33) {
-				hi_border = 1;
-				lo_border = 3;
-			}
-			else if(lirctable->duty_cycle <= 50) {
-				hi_border = 1;
-				lo_border = 2;
-			}
-			else if(lirctable->duty_cycle <= 66) {
-				hi_border = 2;
-				lo_border = 3;
-			}
-			else {	//75%
-				hi_border = 3;
-				lo_border = 4;
+
+			ir.duty_cycle = lirctable->duty_cycle;
+			if(!lirctable->duty_cycle) {	//default 50%
+				ir.duty_cycle = 50;
 			}
 		}
 		
-		T1MR0 = 15000000 / (freq * lo_border);
+		PWM_set_frequency(freq);
+
+		T1MR0 = 15000000 / (freq);
 		
-		
-		ir.lirc.phead = (lirctable->phead * freq) / 1000000;
-		ir.lirc.shead = (lirctable->shead * freq) / 1000000;
-		
-		ir.lirc.plead = (lirctable->plead * freq) / 1000000;
-				
 		ir.lirc.actpre_data = (lirctable->pre_data)<<(32-lirctable->pre_data_bits);
-		ir.lirc.pre_data_bits = lirctable->pre_data_bits;
-		ir.lirc.pre_p = (lirctable->pre_p * freq) / 1000000;
-		ir.lirc.pre_s = (lirctable->pre_s * freq) / 1000000;
-		
-		ir.lirc.post_p = (lirctable->post_p * freq) / 1000000;
-		ir.lirc.post_s = (lirctable->post_s * freq) / 1000000;
 		ir.lirc.actpost_data = (lirctable->post_data)<<(32-lirctable->post_data_bits);
-		ir.lirc.post_data_bits = lirctable->post_data_bits;
-		
-		ir.lirc.ptrail = (lirctable->ptrail * freq) / 1000000;
-		
-		ir.lirc.pfoot = (lirctable->pfoot * freq) / 1000000;
-		ir.lirc.sfoot = (lirctable->sfoot * freq) / 1000000;
-		
-		ir.lirc.prepeat = (lirctable->prepeat * freq) / 1000000;
-		ir.lirc.srepeat = (lirctable->srepeat * freq) / 1000000;
-		
-		ir.lirc.pzero = (lirctable->pzero * freq) / 1000000;
-		ir.lirc.szero = (lirctable->szero * freq) / 1000000;
-		ir.lirc.pone = (lirctable->pone * freq) / 1000000;
-		ir.lirc.sone = (lirctable->sone * freq) / 1000000;
-		ir.lirc.ptwo = (lirctable->ptwo * freq) / 1000000;
-		ir.lirc.stwo = (lirctable->stwo * freq) / 1000000;
-		ir.lirc.pthree = (lirctable->pthree * freq) / 1000000;
-		ir.lirc.sthree = (lirctable->sthree * freq) / 1000000;
-		
-		ir.lirc.gap = (lirctable->gap * freq) / 1000000;
-		ir.lirc.repeat_gap = (lirctable->repeat_gap * freq) / 1000000;
-		
-		ir.lirc.rc6_bit = lirctable->rc6_bit;
-		ir.lirc.flags = lirctable->flags;
-		ir.lirc.bits = lirctable->bits;
-		ir.lirc.min_repeat = lirctable->min_repeat;
-		
+
 		ir.cmd = 0;
 		ir.actcmd = 0;
 		ir.lirc.stop = 0;
 		ir.state = LIRC_IDLE;
 		ir.lirc.bit = 0;
-		ir.lirc.map = map;
 		
 	}
 }
@@ -399,19 +352,19 @@ void LIRC_Send(unsigned long cmd)
 	if(cmd != 0x0000) {
 	
 		ir.lirc.pre_data = ir.lirc.actpre_data;
-		ir.actcmd = cmd<<(32-ir.lirc.bits);
+		ir.actcmd = cmd<<(32-lirctable->bits);
 		ir.lirc.post_data = ir.lirc.actpost_data;
 		ir.lirc.stop = 0;
 		ir.lirc.repeats = 0;
 		 
 		if(ir.toggle & 0x01) {
-			togglemask = (unsigned long)(LIRC.table[ir.lirc.map].toggle_bit_mask) << (32-ir.lirc.post_data_bits);
+			togglemask = (unsigned long)(lirctable->toggle_bit_mask) << (32-lirctable->post_data_bits);
 			ir.lirc.post_data ^= togglemask;
 			
-			togglemask = (unsigned long)(LIRC.table[ir.lirc.map].toggle_bit_mask>>ir.lirc.post_data_bits) << (32-ir.lirc.bits);
+			togglemask = (unsigned long)(lirctable->toggle_bit_mask>>lirctable->post_data_bits) << (32-lirctable->bits);
 			ir.actcmd ^= togglemask;
 			
-			togglemask = (unsigned long)(LIRC.table[ir.lirc.map].toggle_bit_mask>>(ir.lirc.post_data_bits + ir.lirc.bits)) << (32-ir.lirc.pre_data_bits);
+			togglemask = (unsigned long)(lirctable->toggle_bit_mask>>(lirctable->post_data_bits + lirctable->bits)) << (32-lirctable->pre_data_bits);
 			ir.lirc.pre_data ^= togglemask;
 		}
 		
@@ -421,9 +374,9 @@ void LIRC_Send(unsigned long cmd)
 			ir.state++;
 			if(is_RF) {
 				RFasyncmode(true);
-				cc1100_write1(FREQ2,((LIRC.table[ir.lirc.map].freq)>>16) & 0xFF);
-				cc1100_write1(FREQ1,((LIRC.table[ir.lirc.map].freq)>>8) & 0xFF);
-				cc1100_write1(FREQ0,(LIRC.table[ir.lirc.map].freq) & 0xFF);
+				cc1100_write1(FREQ2,((lirctable->freq)>>16) & 0xFF);
+				cc1100_write1(FREQ1,((lirctable->freq)>>8) & 0xFF);
+				cc1100_write1(FREQ0,(lirctable->freq) & 0xFF);
 				cc1100_strobe(STX);
 			}
 			runIR();
@@ -438,7 +391,7 @@ void LIRC_Repeat(void) {
 void LIRC_Stop(void)
 {	
 	ir.lirc.stop = 1;
-    if(ir.lirc.bits){
+	if(lirctable->bits){
 		while(ir.state != LIRC_IDLE);
 	}
 

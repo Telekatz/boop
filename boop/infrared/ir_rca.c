@@ -120,6 +120,7 @@ void __attribute__ ((section(".text.fastcode"))) RCA_Encode (void)
 			}
 			break;
 	}
+	T1MR0 = cycles * RCA_Module.lo_border * RCA_Module.tval;
 }
 
 void RCA_LoadMap(unsigned char map)

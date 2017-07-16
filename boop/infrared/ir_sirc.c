@@ -103,6 +103,8 @@ void __attribute__ ((section(".text.fastcode"))) SIRC_Encode (void)
 			break;
 
 	}
+
+	T1MR0 = cycles * SIRC_Module.lo_border * SIRC_Module.tval;
 }
 
 void SIRC_Init(unsigned char map)

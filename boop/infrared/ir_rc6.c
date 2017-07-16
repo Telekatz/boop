@@ -148,6 +148,7 @@ void __attribute__ ((section(".text.fastcode"))) RC6_Encode (void)
 			}
 			break;
 	}
+	T1MR0 = cycles * RC6_Module.lo_border * RC6_Module.tval;
 }
 
 void RC6_Init(unsigned char map)

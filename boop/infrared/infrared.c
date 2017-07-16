@@ -25,6 +25,7 @@
 #include "encoders.h"
 #include "codes.h"
 #include "ir_selector.h"
+#include "pwm.h"
 
 volatile unsigned char mod_enable;
 volatile unsigned char hi_border;
@@ -61,9 +62,9 @@ void startIrIRQ(void)
 //	T1PR		= 0x01;
 	T1MCR		= 0x03;
 
-	//VICVectAddr1	= (unsigned long)&(irIRQ);
-	//VICVectCntl1	= VIC_SLOT_EN | INT_SRC_TIMER1;
-	VICIntSelect 	|= INT_TIMER1;
+	VICVectAddr1	= (unsigned long)&(irIRQ);
+	VICVectCntl1	= VIC_SLOT_EN | INT_SRC_TIMER1;
+	//VICIntSelect 	|= INT_TIMER1;
 	VICIntEnable	= INT_TIMER1;
 }
 
@@ -109,11 +110,21 @@ void defStopper(void)
 void runIR(void)
 {
 	T1TCR		= 0x01;
+	PWM_set_IR_duty_cycle(0);
+
+}
+
+void setIRspeed(struct irModule module)
+{
+	PWM_set_frequency(15000000 / (module.tval * module.lo_border));
+	ir.duty_cycle =(module.hi_border * 100) / module.lo_border;
 }
 
 void stopIR(void)
 {
 	T1TCR		= 0x03;
+	PWM_set_IR_duty_cycle(0);
+
 }
 
 void copyMapC(unsigned char *map)

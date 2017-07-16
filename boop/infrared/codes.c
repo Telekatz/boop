@@ -222,7 +222,7 @@ const struct TABLES_N RAW =
 
 const struct TABLES_L LIRC =
 {
-	9,
+	10,
 	{
 		{
 			#include "ir_codes/lirc/ufs922"
@@ -259,6 +259,10 @@ const struct TABLES_L LIRC =
 		{
 			#include "ir_codes/lirc/samsung_ue46b6000"
 			"Samsung TV"
-		}
+		},
+		{
+        #include "ir_codes/lirc/beo4"
+        "bang & olufsen"
+    }
 	}
 };

@@ -71,12 +71,12 @@ unsigned restoreIRQ(unsigned oldCPSR)
 // (where's the vector? in lpc2220_rom.ld ?)
 void __attribute__ ((section(".text.fastcode"))) FIQ_Routine (void)
 {
-	while ((PWMIR == 0x01) || (T1IR == 1)) 
+	//while ((PWMIR == 0x01))
 	{
 		if (PWMIR == 0x01)
 			soundIRQ();			// sound, backlight
-		if (T1IR == 1)
-			irIRQ();			// IR
+		//if (T1IR == 1)
+		//	irIRQ();			// IR
 	}
 }
 

@@ -90,6 +90,7 @@ void __attribute__ ((section(".text.fastcode"))) RECS80_Encode (void)
 			}
 			break;
 	}
+	T1MR0 = cycles * RECS80_Module.lo_border * RECS80_Module.tval;
 }
 
 void RECS80_Init(unsigned char map)
