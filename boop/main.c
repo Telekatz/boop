@@ -88,8 +88,8 @@ void setSpeed(unsigned char sp)
 
 			VPBDIV = 0x00;
 
-			BCFG0	= 0x100004A0;
-			BCFG2	= 0x100004A0;
+			BCFG0	= 0x10001CA0;
+			BCFG2	= 0x10001CA0;
 			BCFG1	= 0x00000C21;
 			sysInfo |= SYS_TURBO;
 			break;
@@ -103,8 +103,8 @@ void setSpeed(unsigned char sp)
 
 			VPBDIV = 0x02;
 
-			BCFG0	= 0x10000420;
-			BCFG2	= 0x10000420;
+			BCFG0	= 0x10000A20;
+			BCFG2	= 0x10000A20;
 			BCFG1	= 0x00000400;
 			sysInfo &= ~SYS_TURBO;
 			break;
@@ -244,6 +244,7 @@ int main(void)
 	FIOCLR0 |= (1<<4);
 
 	setSpeed(SPEED_60);
+	BFS_Mount();		// flash file system
 
 	lcd_init(0);
 	serial_init();
@@ -284,10 +285,8 @@ int main(void)
 
 	set_font(BOLDFONT);
 
-	BFS_Mount();		// flash file system
-	load_RC_setting();	// learned remote codes
 	load_setting();		// display settings
-	
+	load_RC_setting();	// learned remote codes
 	
 	// recorded raw IR commands
 	{

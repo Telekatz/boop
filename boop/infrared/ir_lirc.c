@@ -165,11 +165,11 @@ void __attribute__ ((section(".text.fastcode"))) LIRC_Encode (void) {
 		case LIRC_PRE_DAT_P:
 			if(!has_repeat || !(ir.lirc.repeats)) {
 				if(lirctable->pre_data_bits) {
-					send_data(lirctable->pre_data,1);
+					send_data(ir.lirc.pre_data,1);
 					ir.state++;
 					break;
 		case LIRC_PRE_DAT_S:
-		      ir.lirc.pre_data <<= send_data(lirctable->pre_data,0);
+					ir.lirc.pre_data <<= send_data(ir.lirc.pre_data,0);
 					if(ir.lirc.bit >= lirctable->pre_data_bits)
 						ir.state++;
 					else
@@ -226,11 +226,11 @@ void __attribute__ ((section(".text.fastcode"))) LIRC_Encode (void) {
 					}
 					ir.state = LIRC_POST_DAT_P;
 		case LIRC_POST_DAT_P:
-					send_data(lirctable->post_data,1);
+					send_data(ir.lirc.post_data,1);
 					ir.state++;
 					break;
 		case LIRC_POST_DAT_S:
-		  ir.lirc.post_data <<= send_data(lirctable->post_data,0);
+		  ir.lirc.post_data <<= send_data(ir.lirc.post_data,0);
 					if(ir.lirc.bit >= lirctable->pre_data_bits + lirctable->bits + lirctable->post_data_bits)
 						ir.state = LIRC_TRAIL_P;
 					else

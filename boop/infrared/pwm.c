@@ -66,6 +66,13 @@ void PWM_set_frequency(unsigned long f)
 	}
 	PWMLER |= 0x01;    //Latch Enable
 
+
+	if(f < 32000) {
+		PWMMCR = 0x03;
+	} else {
+		PWMMCR = 0x02;
+	}
+
 }
 
 void PWM_set_IR_duty_cycle(unsigned char d) {
