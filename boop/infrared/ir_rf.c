@@ -42,7 +42,7 @@ extern volatile unsigned long keyMap[42];
 #define IRRF_WAIT	0x01
 
 #define IRRF_BITTIME	 40
-#define IRRF_WAITTIME	125
+#define IRRF_WAITTIME	100
 
 void __attribute__ ((section(".text.fastcode"))) IRRF_Encode (void)
 {
@@ -63,6 +63,7 @@ void __attribute__ ((section(".text.fastcode"))) IRRF_Encode (void)
 			}
 			break;
 	}
+	T1MR0 = 15*1000;
 }
 
 void IRRF_Init(unsigned char map)
@@ -100,9 +101,10 @@ void IRRF_Repeat(void)
 			struct RFendpoint_* cur_ep;
 			cur_ep = (struct RFendpoint_*)ir.general.trail;
 			if((cur_ep) && !(cur_ep->flags & EPnewdata)) {
-				cur_ep->dest = (ir.actcmd & 0xff00) >> 8;
-				cur_ep->data[0] = (ir.actcmd & 0x00ff);
-				cur_ep->bufferlen = 1;
+				cur_ep->dest = 0;
+				cur_ep->data[1] = (ir.actcmd & 0x00ff);
+				cur_ep->data[0] = (ir.actcmd & 0xff00) >> 8;
+				cur_ep->bufferlen = 2;
 				cur_ep->flags |= EPenabled | EPoutput | EPnewdata;
 				
 				RF_changestate(RFtx);

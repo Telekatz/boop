@@ -118,8 +118,8 @@
 #define MARCSTATE_IDLE	0x01
 #define MARCSTATE_RX	0x0d
 
-const unsigned char conf[0x2F] __attribute__((aligned(0x4)));
-const unsigned char confasync[0x2F] __attribute__((aligned(0x4)));
+extern const unsigned char conf[]; //__attribute__((aligned(0x4)));
+extern const unsigned char confasync[];// __attribute__((aligned(0x4)));
 
 void cc1100_init(void);
 unsigned char cc1100_write(unsigned char addr, unsigned char* data, unsigned char length);

@@ -485,14 +485,14 @@ void RFasyncmode(unsigned char on) {
 		RF_changestate(RFidle);
 		while(RF.state != RFidle);
 		stopRFIRQ();
-		cc1100_write((0x00 | BURST ),(unsigned char*)confasync,0x2f);
+		cc1100_write((0x00 | BURST ),(unsigned char*)confasync,sizeof((unsigned char*)confasync));
 		cc1100_write1(PATABLE,0xf0);
 		PINSEL1 &= 0xfffffffc;			// GDO0 as GPIO
 		FIODIR0 |= GDO0;				// output
 	}
 	else {
 		PINSEL1 |= 1;					// GDO0 as EINT0
-		cc1100_write((0x00 | BURST ),(unsigned char*)conf,0x2f);
+		cc1100_write((0x00 | BURST ),(unsigned char*)conf,sizeof((unsigned char*)conf));
 		cc1100_write1(PATABLE,0xC0);
 		cc1100_strobe(SIDLE);
 		load_RF_setting();

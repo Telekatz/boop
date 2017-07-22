@@ -863,6 +863,35 @@ void test_RF(void) {
 			cur_ep->flags |= EPenabled | EPoutput | EPnewdata | EPonce | EPsendwor;
 			
 			RF_changestate(RFtx);
+		} else if(KEY_1)
+		{
+			struct RFendpoint_* cur_ep;
+
+			cur_ep = openEP(0,0, packet_test);
+			if(cur_ep) {
+				cur_ep->dest = destAddr;
+				cur_ep->data[0] = 'X';
+				cur_ep->data[1] = '1';
+				cur_ep->data[2] = 0x00;
+				cur_ep->bufferlen = 3;
+				cur_ep->flags |= EPenabled | EPoutput | EPnewdata | EPonce;
+
+				RF_changestate(RFtx);
+			}
+		}
+		else if(KEY_2)
+		{
+			struct RFendpoint_* cur_ep;
+
+			cur_ep = openEP(0,0, packet_test);
+			cur_ep->dest = destAddr;
+			cur_ep->data[0] = 'X';
+			cur_ep->data[1] = '2';
+			cur_ep->data[2] = 0x00;
+			cur_ep->bufferlen = 3;
+			cur_ep->flags |= EPenabled | EPoutput | EPnewdata | EPonce ;
+
+			RF_changestate(RFtx);
 		}
 	}
 }
