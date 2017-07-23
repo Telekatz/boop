@@ -55,7 +55,7 @@ ifeq ($(MAKECMDGOALS),debug)
 	COMPILE += -D DEBUGMODE
 	OPTFLAGS = -O0
 else
-	OPTFLAGS = -Os
+	OPTFLAGS = -Og 
 endif
 
 ifeq ($(MAKECMDGOALS),release)

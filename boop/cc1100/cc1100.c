@@ -26,58 +26,74 @@
 #include "cc1100.h"
 #include "irq.h"
 
-//setting 6_WOR
-const unsigned char conf[0x2F] = {   
-	0x29,	// IOCFG2
-	0x2E,	// IOCFG1
-	0x06,	// IOCFG0
-	0x47,	// FIFOTHR
-	0xD3,	// SYNC1
-	0x91,	// SYNC0
-	0x3E,	// PKTLEN
-	0x1A,	// PKTCTRL1
-	0x45,	// PKTCTRL0
-	0x01,	// ADDR
-	0x01,	// CHANNR
-	0x06,	// FSCTRL1
-	0x00,	// FSCTRL0
-	0x10,	// FREQ2		#
-	0x0B,	// FREQ1		#
-	0xDA,	// FREQ0		# -> 433,249969 MHz
-	0x8A,	// MDMCFG4
-	0x75,	// MDMCFG3
-	0x13,	// MDMCFG2
-	0x22,	// MDMCFG1
-	0xC1,	// MDMCFG0	CHANSPC_M
-	0x35,	// DEVIATN
-	0x04,	// MCSM2
-	0x0C,	// MCSM1 0c
-	0x38,	// MCSM0
-	0x16,	// FOCCFG
-	0x6C,	// BSCFG
-	0x43,	// AGCCTRL2
-	0x40,	// AGCCTRL1
-	0x91,	// AGCCTRL0
-	0x46,	// WOREVT1
-	0x50,	// WOREVT0
-	0x78,	// WORCTRL
-	0x56,	// FREND1
-	0x10,	// FREND0
-	0xA9,	// FSCAL3
-	0x0A,	// FSCAL2
-	0x00,	// FSCAL1
-	0x11,	// FSCAL0
-	0x41,	// RCCTRL1
-	0x00,	// RCCTRL0
-	0x57,	// FSTEST
-	0x7F,	// PTEST
-	0x3F,	// AGCTEST
-	0x98,	// TEST2
-	0x31,	// TEST1
-	0x0B	// TEST0
+// Deviation = 21.423340
+// Base frequency = 433.254913
+// Carrier frequency = 433.254913
+// Channel number = 0
+// Carrier frequency = 433.254913
+// Modulated = true
+// Modulation format = GFSK
+// Manchester enable = false
+// Sync word qualifier mode = 30/32 sync word bits detected
+// Preamble count = 4
+// Channel spacing = 184.982300
+// Carrier frequency = 433.254913
+// Data rate = 37.4908
+// RX filter BW = 210.937500
+// Data format = Normal mode
+// CRC enable = true
+// Whitening = false
+// Device address = 1
+// Address config = Address check and 0 (0x00) broadcast
+// CRC autoflush = true
+// PA ramping = false
+// TX power = 0
+// Rf settings for CC1101
+const unsigned char conf[] = {
+    0x29,  // IOCFG2        GDO2 Output Pin Configuration
+    0x2E,  // IOCFG1        GDO1 Output Pin Configuration
+    0x06,  // IOCFG0        GDO0 Output Pin Configuration
+    0x47,  // FIFOTHR       RX FIFO and TX FIFO Thresholds
+    0xD3,  // SYNC1         Sync Word, High Byte
+    0x91,  // SYNC0         Sync Word, Low Byte
+    0x3E,  // PKTLEN        Packet Length
+    0x1A,  // PKTCTRL1      Packet Automation Control
+    0x05,  // PKTCTRL0      Packet Automation Control
+    0x01,  // ADDR          Device Address
+    0x00,  // CHANNR        Channel Number
+    0x06,  // FSCTRL1       Frequency Synthesizer Control
+    0x00,  // FSCTRL0       Frequency Synthesizer Control
+    0x10,  // FREQ2         Frequency Control Word, High Byte
+    0x0B,  // FREQ1         Frequency Control Word, Middle Byte
+    0xE6,  // FREQ0         Frequency Control Word, Low Byte
+    0x8A,  // MDMCFG4       Modem Configuration
+    0x6C,  // MDMCFG3       Modem Configuration
+    0x13,  // MDMCFG2       Modem Configuration
+    0x22,  // MDMCFG1       Modem Configuration
+    0xC1,  // MDMCFG0       Modem Configuration
+    0x35,  // DEVIATN       Modem Deviation Setting
+    0x04,  // MCSM2         Main Radio Control State Machine Configuration
+    0x0C,  // MCSM1         Main Radio Control State Machine Configuration
+    0x38,  // MCSM0         Main Radio Control State Machine Configuration
+    0x16,  // FOCCFG        Frequency Offset Compensation Configuration
+    0x6C,  // BSCFG         Bit Synchronization Configuration
+    0x43,  // AGCCTRL2      AGC Control
+    0x40,  // AGCCTRL1      AGC Control
+    0x91,  // AGCCTRL0      AGC Control
+    0x46,  // WOREVT1       High Byte Event0 Timeout
+    0x50,  // WOREVT0       Low Byte Event0 Timeout
+    0x78,  // WORCTRL       Wake On Radio Control
+    0x56,  // FREND1        Front End RX Configuration
+    0x10,  // FREND0        Front End TX Configuration
+    0xE9,  // FSCAL3        Frequency Synthesizer Calibration
+    0x2A,  // FSCAL2        Frequency Synthesizer Calibration
+    0x00,  // FSCAL1        Frequency Synthesizer Calibration
+    0x1F,  // FSCAL0        Frequency Synthesizer Calibration
+    0x41,  // RCCTRL1       RC Oscillator Configuration
+    0x00,  // RCCTRL0       RC Oscillator Configuration
 };
 
-const unsigned char confasync[0x2F] = {   
+const unsigned char confasync[] = {
 	0x0D,	// IOCFG2
 	0x0D,	// IOCFG1
 	0x2E,	// IOCFG0
@@ -120,12 +136,6 @@ const unsigned char confasync[0x2F] = {
 	0x1F,	// FSCAL0
 	0x41,	// RCCTRL1
 	0x00,	// RCCTRL0
-	0x59,	// FSTEST
-	0x7F,	// PTEST
-	0x3F,	// AGCTEST
-	0x81,	// TEST2
-	0x35,	// TEST1
-	0x09	// TEST0
 };
 
 void cc1100_init(void) {
@@ -164,7 +174,7 @@ void cc1100_init(void) {
 	while (SSPSR & (1<<4));
 	xx = SSPDR;
 		
-	cc1100_write((0x00 | BURST ),(unsigned char*)conf,0x2f);
+	cc1100_write((0x00 | BURST ),(unsigned char*)conf,sizeof(conf));
 	cc1100_write1(PATABLE,0xC0);
 	cc1100_strobe(SIDLE);
 	cc1100_strobe(SPWD);
