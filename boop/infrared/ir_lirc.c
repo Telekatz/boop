@@ -212,7 +212,7 @@ void __attribute__ ((section(".text.fastcode"))) LIRC_Encode (void) {
 					ir.state--;
 				break;
 		case LIRC_POST_P:
-				if(lirctable->post_data_bits) {
+				if(lirctable->post_data_bits || is_BO) {
 					if(lirctable->post_p && lirctable->post_s) {
 						mod_enable = 1;
 						cycles = lirctable->post_p;
@@ -222,6 +222,8 @@ void __attribute__ ((section(".text.fastcode"))) LIRC_Encode (void) {
 						mod_enable = 0;
 						cycles = lirctable->post_s;
 						ir.state++;
+						if(is_BO)
+							ir.state = LIRC_REPEAT_P;
 						break;
 					}
 					ir.state = LIRC_POST_DAT_P;
