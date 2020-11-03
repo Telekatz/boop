@@ -1,0 +1,8 @@
+<DataBase>
+  
+  <Device>
+    <ChipInfo Vendor="NXP" Name="Betty"  WorkRAMAddr="0x40000000" WorkRAMSize="0x00010000" Core="JLINK_CORE_ARM7TDMI_S"  />
+    <FlashBankInfo Name="Flash0" BaseAddr="0x80000000" MaxSize="0x00100000" Loader="Devices/Betty_JLink.elf" LoaderType="FLASH_ALGO_TYPE_OPEN" />
+  </Device>
+  
+</DataBase>
