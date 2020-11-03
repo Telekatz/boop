@@ -38,9 +38,16 @@ void __attribute__ ((section(".text.fastcode"))) irIRQ(void)
 	irEncoder();
 
 	if(mod_enable) {
-	  PWM_set_IR_duty_cycle(ir.duty_cycle);
+		if(ir.duty_cycle == 1)
+			FIOCLR0 = GDO0;
+		else
+			PWM_set_IR_duty_cycle(ir.duty_cycle);
+
 	} else {
-	  PWM_set_IR_duty_cycle(0);
+		if(ir.duty_cycle == 1)
+			FIOSET0 = GDO0;
+		else
+			PWM_set_IR_duty_cycle(0);
 	}
 
 	T1IR = 1;

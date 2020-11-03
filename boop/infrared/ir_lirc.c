@@ -316,7 +316,7 @@ void LIRC_Init(unsigned char map)
 		setIR(LIRC_Module);
 		
 		if(lirctable->flags&LIRC_RF) {
-		  ir.duty_cycle = 50;
+			ir.duty_cycle = 1;
 			freq = 20000;
 		}
 		else {
