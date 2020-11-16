@@ -222,7 +222,7 @@ const struct TABLES_N RAW =
 
 const struct TABLES_L LIRC =
 {
-	10,
+	11,
 	{
 		{
 			#include "ir_codes/lirc/ufs922"
@@ -263,6 +263,10 @@ const struct TABLES_L LIRC =
 		{
         #include "ir_codes/lirc/beo4"
         "bang & olufsen"
-    }
+    },
+		{
+			#include "ir_codes/lirc/itv1"	// intertechno support V1 protocol
+			"IT V1"
+		}
 	}
 };
